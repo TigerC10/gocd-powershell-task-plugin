@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.2...v1.0.3) (2025-04-18)
+
+
+### Bug Fixes
+
+* bootstrap ace in ng-show ([005444b](https://github.com/TigerC10/gocd-powershell-task-plugin/commit/005444b38afe80f14414b0b168becce53e60492a))
+
 ## [1.0.2](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.1...v1.0.2) (2025-04-18)
 
 
