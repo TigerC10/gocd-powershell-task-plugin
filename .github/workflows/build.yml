@@ -1,0 +1,41 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch: 
+    
+  workflow_call:
+
+name: Build
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: 15
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '6.9.4'
+
+      - name: Setup Gradle Wrapper
+        run: gradle wrapper --distribution-type all
+
+      - name: Build with Gradle
+        run: ./gradlew build
+        
+      - name: Upload libs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_libs
+          path: ./build/libs/**
