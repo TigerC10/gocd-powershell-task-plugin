@@ -71,7 +71,7 @@ dependencies {
 //  testImplementation group: 'org.junit', name: 'junit-bom'
 //  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter'
 //  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
-  testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+  testCompile group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
   testCompile group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.3'
 
   runtimeClasspath group: 'org.webjars.npm', name: 'ace-builds', version: '1.38.0'
