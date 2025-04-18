@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.1...v1.0.2) (2025-04-18)
+
+
+### Bug Fixes
+
+* bootstrap ace refactor ([41d49ff](https://github.com/TigerC10/gocd-powershell-task-plugin/commit/41d49ff0e2d2fd8a0efd60450fbdcfc802109a4b))
+
 ## [1.0.1](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.0...v1.0.1) (2025-04-18)
 
 
