@@ -15,6 +15,7 @@
   -->
 
 <script type="text/javascript">
+  console.info('loading ACE files...');
   const scriptUrls = [
     { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/ace.min.js", integrity: "sha512-ltU111DxCFsqGT1FvKWwInwpg7r3cKcyqWSvN92Lo1NM3Q4Zskli4GnV2htQHF9u4o6NATHgNUDFyvqrxKdPzg==" },
     { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/ext-language_tools.min.js", integrity: "sha512-L+lSo49H8Yv9b6EdszH1LdR7xM+hVSP1klSeAKnjAw8izjfpkoVBlFNOQGm34u1gWIS3uwTzIZ9APNv0Bx7Otw==" },
@@ -30,12 +31,16 @@
   aceScript.crossOrigin = "anonymous";
   aceScript.referrerpolicy="no-referrer"
   document.head.appendChild(aceScript);
+  console.info('ACE base loaded...');
 
   const waitForIt = setInterval(function () {
+    console.info('Waiting for ACE to parse and execute...');
     if (typeof ace !== 'undefined') {
+      console.info('ACE loaded...');
       clearInterval(waitForIt);
-      window.define = ace.define;
+      window.define = window.define || ace.define;
 
+      console.info('Loading remainder of ACE scripts...');
       scriptUrls.forEach(scriptUrl => {
         const script = document.createElement('script');
         script.src = scriptUrl.src;
@@ -44,6 +49,7 @@
         script.referrerpolicy="no-referrer"
         document.head.appendChild(script);
       });
+      console.info('Remainder of ACE scripts loaded...');
     }
   }, 10);
 </script>
@@ -79,6 +85,7 @@
   <textarea id="command" wrap="off" autocomplete="off" style="display: none;"></textarea>
   <span class="form_error" ng-show="GOINPUTNAME[Command].$error.server">{{ GOINPUTNAME[Command].$error.server }}</span>
   <script type="text/javascript">
+    console.info('Initializing ACE editor...');
     // initialize editor
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/tomorrow");
@@ -92,9 +99,11 @@
 
     // set the initial value
     editor.setValue(document.getElementById('command').value, -1);
+    console.info('ACE editor initialized...');
 
     // bind changes to the hidden text area
     editor.session.on('change', function() {
+      console.info('ACE editor content change!');
       var cmd = document.getElementById('command');
       cmd.value = editor.session.getValue();
       cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
