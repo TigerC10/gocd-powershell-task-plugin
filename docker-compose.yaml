@@ -1,0 +1,38 @@
+version: "3"
+services:
+  go-server:
+    image: gocd/gocd-server:v25.1.0
+    ports:
+      - "8153:8153"
+      - "8154:8154"
+    environment:
+      - GO_SERVER_SYSTEM_PROPERTIES=-Dcruise.material.update.interval=2000 -Dmaterial.update.idle.interval=2000
+      - GOCD_PLUGIN_INSTALL_go-nuget-poller-plugin=https://github.com/gocd-contrib/go-nuget-poller-plugin-2.0/releases/download/2.1.1-200/go-nuget-poller-plugin-2.1.1-200.jar
+      - GOCD_PLUGIN_INSTALL_go-generic-artifactory-poller=https://github.com/varchev/go-generic-artifactory-poller/releases/download/0.2.0/go-generic-artifactory-poller.jar
+      - GOCD_PLUGIN_INSTALL_go-npm-poller=https://github.com/varchev/go-npm-poller/releases/download/0.3.1/go-npm-poller.jar
+
+    volumes:
+      - ./build/libs:/build
+      - ./scripts/server:/docker-entrypoint.d
+      - ./scripts/shared:/shared
+      - godata:/godata
+
+  go-agent:
+    image: gocd/gocd-agent-alpine:v25.1.0
+
+    environment:
+      - GO_SERVER_URL=https://server:8154/go
+      - AGENT_AUTO_REGISTER_KEY=agent-autoregister-key
+
+    volumes:
+      - ./scripts/agent:/docker-entrypoint.d
+      - ./scripts/shared:/shared
+
+    deploy:
+      replicas: 2
+
+    depends_on:
+      - "go-server"
+
+volumes:
+  godata: {}

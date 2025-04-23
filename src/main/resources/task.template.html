@@ -1,0 +1,138 @@
+<!--
+  ~ Copyright 2025 Volusion, LLC.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div data-plugin-style-id="cd.go.contrib.task.powershell">
+    <script type="text/javascript">
+        console.info('loading ACE files...');
+        const scriptUrls = [
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/ace.min.js", integrity: "sha512-ltU111DxCFsqGT1FvKWwInwpg7r3cKcyqWSvN92Lo1NM3Q4Zskli4GnV2htQHF9u4o6NATHgNUDFyvqrxKdPzg==" },
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/ext-language_tools.min.js", integrity: "sha512-L+lSo49H8Yv9b6EdszH1LdR7xM+hVSP1klSeAKnjAw8izjfpkoVBlFNOQGm34u1gWIS3uwTzIZ9APNv0Bx7Otw==" },
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/mode-powershell.min.js", integrity: "sha512-a7vIjzjQxOXP8XwgOBjK8xQWxca0Nq7ujt/SQhS2a7/YiKumPlA/QAKzVXa2lR9aYwoDSNwDyz/eDViyyanV2g==" },
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/theme-tomorrow.min.js", integrity: "sha512-EBZaRQZt28witqwUjBmpIa+umnD8bYrY19LXCu8sHbreQB/eNJqHV0cSYAezsWdVsazdMLxhP/uxP2qLUuBeAQ==" },
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.40.0/keybinding-vscode.min.js", integrity: "sha512-sALdRE8skRaHi5dri3ejsaAQb1NCbkiBMSUI/IWJQYMzA7k/VvlJ5JLOX3n88OG2S+zEcqeJlaX7GZOeLXyYlQ==" },
+        ];
+        const baseScriptUrl = scriptUrls.shift();
+
+        const aceScript = document.createElement('script');
+        aceScript.src = baseScriptUrl.src;
+        aceScript.integrity = baseScriptUrl.integrity;
+        aceScript.crossOrigin = "anonymous";
+        aceScript.referrerpolicy="no-referrer"
+        document.head.appendChild(aceScript);
+        console.info('ACE base loaded...');
+
+        const waitForIt = setInterval(function () {
+            console.info('Waiting for ACE to parse and execute...');
+            if (typeof ace !== 'undefined') {
+            console.info('ACE loaded...');
+            clearInterval(waitForIt);
+            window.define = window.define || ace.define;
+
+            console.info('Loading remainder of ACE scripts...');
+            scriptUrls.forEach(scriptUrl => {
+                const script = document.createElement('script');
+                script.src = scriptUrl.src;
+                script.integrity = scriptUrl.integrity;
+                script.crossOrigin = "anonymous";
+                script.referrerpolicy="no-referrer"
+                document.head.appendChild(script);
+            });
+            console.info('Remainder of ACE scripts loaded...');
+            }
+        }, 10);
+    </script>
+
+    <div class="form_item_block">
+    <label for="powershellVersion">PowerShell Version: <span class="asterisk">*</span></label>
+    <select id="powershellVersion" ng-model="PowerShellVersion" ng-required="true">
+        <option value="PowerShell.exe">Windows Powershell</option>
+        <option value="pwsh">PowerShell 7+</option>
+    </select>
+    <span class="form_error" ng-show="GOINPUTNAME[PowerShellVersion].$error.server">{{ GOINPUTNAME[PowerShellVersion].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block">
+    <label>Pass Script to PowerShell Using:</label>
+    <div class="checkbox_row">
+        <input id="modeFile" type="radio" ng-model="Mode" value="File">
+        <label for="modeFile">-File</label>
+        <input id="modeCommand" type="radio" ng-model="Mode" value="Command">
+        <label for="modeCommand">-Command</label>
+    </div>
+    </div>
+
+    <div class="form_item_block" ng-show="Mode == 'File'">
+    <label for="file">File:</label>
+    <input type="text" id="file" ng-model="File" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[File].$error.server">{{ GOINPUTNAME[File].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block" ng-show="Mode == 'Command'">
+    <label for="command">Command:</label>
+    <div id="editor" style="min-height: 26;"></div>
+    <textarea id="command" wrap="off" autocomplete="off" style="display: none;"></textarea>
+    <span class="form_error" ng-show="GOINPUTNAME[Command].$error.server">{{ GOINPUTNAME[Command].$error.server }}</span>
+    <script type="text/javascript">
+        console.info('Initializing ACE editor...');
+        // initialize editor
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/tomorrow");
+        editor.session.setMode("ace/mode/powershell");
+        editor.setKeyboardHandler("ace/keyboard/vscode");
+        editor.setOptions({
+        minLines: 1,
+        maxLines: 13,
+        printMargin: false,
+        });
+
+        // set the initial value
+        editor.setValue(document.getElementById('command').value, -1);
+        console.info('ACE editor initialized...');
+
+        // bind changes to the hidden text area
+        editor.session.on('change', function() {
+        console.info('ACE editor content change!');
+        var cmd = document.getElementById('command');
+        cmd.value = editor.session.getValue();
+        cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
+        });
+    </script>
+    </div>
+
+    <div class="form_item_block">
+    <label>Additional Options:</label>
+    <div class="checkbox_row">
+        <input type="checkbox" id="noprofile" ng-model="NoProfile" ng-init="NoProfile = NoProfile || false" ng-true-value="true" ng-false-value="false"/>
+        <label for="noprofile">-NoProfile</label>
+    </div>
+    <div class="checkbox_row">
+        <input type="checkbox" id="nologo" ng-model="NoLogo" ng-init="NoLogo = NoLogo || false" ng-true-value="true" ng-false-value="false"/>
+        <label for="nologo">-NoLogo</label>
+    </div>
+    <div class="checkbox_row">
+        <label for="executionPolicy">Execution Policy:</label>
+        <select id="executionPolicy" ng-model="ExecutionPolicy" ng-required="true">
+        <option value="Default">Default</option>
+        <option value="AllSigned">AllSigned</option>
+        <option value="RemoteSigned">RemoteSigned</option>
+        <option value="Bypass">Bypass</option>
+        <option value="Restricted">Restricted</option>
+        <option value="Unrestricted">Unrestricted</option>
+        <option value="Undefined">Undefined</option>
+        </select>
+        <span class="form_error" ng-show="GOINPUTNAME[ExecutionPolicy].$error.server">{{ GOINPUTNAME[ExecutionPolicy].$error.server }}</span>
+    </div>
+    </div>
+</div>
