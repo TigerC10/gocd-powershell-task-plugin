@@ -74,7 +74,7 @@ dependencies {
   testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
   testCompile group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.3'
 
-  runtimeClasspath group: 'org.webjars.npm', name: 'ace-builds', version: '1.38.0'
+  runtimeClasspath group: 'org.webjars.npm', name: 'ace-builds', version: '1.40.0'
 }
 
 processResources {
