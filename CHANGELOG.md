@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.8](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.7...v1.0.8) (2025-05-24)
+
+
+### Bug Fixes
+
+* Update PowerShellTaskExecutor.java ([f67b56f](https://github.com/TigerC10/gocd-powershell-task-plugin/commit/f67b56faa4e06e4b20c0d3418569c83f97179df6))
+
 ## [1.0.7](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.6...v1.0.7) (2025-05-24)
 
 
