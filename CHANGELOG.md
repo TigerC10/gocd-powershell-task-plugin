@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.8...v1.0.9) (2025-05-24)
+
+
+### Bug Fixes
+
+* Update task.template.html ([5d664a9](https://github.com/TigerC10/gocd-powershell-task-plugin/commit/5d664a9731a8db487eab6442f6d93d035a8b7416))
+
 ## [1.0.8](https://github.com/TigerC10/gocd-powershell-task-plugin/compare/v1.0.7...v1.0.8) (2025-05-24)
 
 
