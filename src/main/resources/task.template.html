@@ -82,15 +82,17 @@
                                 console.info('ACE editor initialized...');
 
                                 // bind changes to the hidden text area
-                                editor.session.on('change', function () {
+                                editor.session.on('change', function (delta) {
                                     console.info('ACE editor content change!');
                                     var cmd = document.getElementById('command');
-                                    cmd.value = editor.session.getValue();
+                                    const angularScope = angular.element(cmd).scope();
+                                    cmd.value = angularScope.Command = editor.session.getValue();
+                                    angularScope.$apply();
                                     cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
                                 });
                             }
                         });
-                    }, 20);
+                    }, 10);
                 }
             }, 10);
         })();
