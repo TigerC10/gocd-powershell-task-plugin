@@ -50,6 +50,46 @@
                     document.head.appendChild(script);
                 });
                 console.info('Remainder of ACE scripts loaded...');
+
+                console.info('Initializing ACE editor...');
+                const waitForThem = setInterval(function () {
+                    console.info('Waiting for ACE Plugins to parse and execute...');
+                    window.require([
+                        'ace/snippets',
+                        'ace/mode/powershell_highlight_rules',
+                        'ace/theme/tomorrow-css',
+                        'ace/keyboard/vscode',
+                    ], function(snippets, powershell, themeTomorrow, keysVscode) {
+                        if ([snippets, powershell, themeTomorrow, keysVscode].every(plugin => (typeof plugin !== 'undefined' && plugin !== null && plugin !== ''))) {
+                            console.info('ACE Plugins loaded...');
+                            clearInterval(waitForThem);
+
+                            // initialize editor
+                            var editor = window.ace.edit("editor");
+                            editor.setTheme("ace/theme/tomorrow");
+                            editor.session.setMode("ace/mode/powershell");
+                            editor.setKeyboardHandler("ace/keyboard/vscode");
+                            editor.setOptions({
+                                minLines:    1,
+                                maxLines:    13,
+                                printMargin: false,
+                            });
+                            document.getElementById('command').style.display = 'none';
+
+                            // set the initial value
+                            editor.setValue(document.getElementById('command').value, -1);
+                            console.info('ACE editor initialized...');
+
+                            // bind changes to the hidden text area
+                            editor.session.on('change', function () {
+                                console.info('ACE editor content change!');
+                                var cmd = document.getElementById('command');
+                                cmd.value = editor.session.getValue();
+                                cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
+                            });
+                        }
+                    });
+                }, 20);
             }
         }, 10);
     </script>
@@ -84,47 +124,6 @@
     <div id="editor" style="min-height: 26;"></div>
     <textarea id="command" wrap="off" autocomplete="off"></textarea>
     <span class="form_error" ng-show="GOINPUTNAME[Command].$error.server">{{ GOINPUTNAME[Command].$error.server }}</span>
-    <script type="text/javascript">
-        console.info('Initializing ACE editor...');
-        const waitForThem = setInterval(function () {
-            console.info('Waiting for ACE Plugins to parse and execute...');
-            window.require([
-                'ace/snippets',
-                'ace/mode/powershell_highlight_rules',
-                'ace/theme/tomorrow-css',
-                'ace/keyboard/vscode',
-            ], function(snippets, powershell, themeTomorrow, keysVscode) {
-                if ([snippets, powershell, themeTomorrow, keysVscode].every(plugin => (typeof plugin !== 'undefined' && plugin !== null && plugin !== ''))) {
-                    console.info('ACE Plugins loaded...');
-                    clearInterval(waitForThem);
-
-                    // initialize editor
-                    var editor = window.ace.edit("editor");
-                    editor.setTheme("ace/theme/tomorrow");
-                    editor.session.setMode("ace/mode/powershell");
-                    editor.setKeyboardHandler("ace/keyboard/vscode");
-                    editor.setOptions({
-                        minLines:    1,
-                        maxLines:    13,
-                        printMargin: false,
-                    });
-                    document.getElementById('command').style.display = 'none';
-
-                    // set the initial value
-                    editor.setValue(document.getElementById('command').value, -1);
-                    console.info('ACE editor initialized...');
-
-                    // bind changes to the hidden text area
-                    editor.session.on('change', function () {
-                        console.info('ACE editor content change!');
-                        var cmd = document.getElementById('command');
-                        cmd.value = editor.session.getValue();
-                        cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
-                    });
-                }
-            });
-        }, 20);
-    </script>
     </div>
 
     <div class="form_item_block">
