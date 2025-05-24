@@ -15,83 +15,85 @@
       ~ limitations under the License.
     -->
     <script type="text/javascript">
-        console.info('loading ACE files...');
-        const scriptUrls = [
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/ace.min.js", integrity: "sha512-flsyiGnpzyMMHGTb5iRwPNK2nObeYrmOryKKZmDYXeXpQeyaYnQdR97huozvxnnFrEADLqIHGFKoehUNDk/ZNg==" },
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/ext-language_tools.min.js", integrity: "sha512-L+lSo49H8Yv9b6EdszH1LdR7xM+hVSP1klSeAKnjAw8izjfpkoVBlFNOQGm34u1gWIS3uwTzIZ9APNv0Bx7Otw==" },
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/mode-powershell.min.js", integrity: "sha512-a7vIjzjQxOXP8XwgOBjK8xQWxca0Nq7ujt/SQhS2a7/YiKumPlA/QAKzVXa2lR9aYwoDSNwDyz/eDViyyanV2g==" },
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/theme-tomorrow.min.js", integrity: "sha512-EBZaRQZt28witqwUjBmpIa+umnD8bYrY19LXCu8sHbreQB/eNJqHV0cSYAezsWdVsazdMLxhP/uxP2qLUuBeAQ==" },
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/keybinding-vscode.min.js", integrity: "sha512-sALdRE8skRaHi5dri3ejsaAQb1NCbkiBMSUI/IWJQYMzA7k/VvlJ5JLOX3n88OG2S+zEcqeJlaX7GZOeLXyYlQ==" },
-        ];
-        const baseScriptUrl = scriptUrls.shift();
+        (function() {
+            console.info('loading ACE files...');
+            const scriptUrls = [
+                {src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/ace.min.js", integrity: "sha512-flsyiGnpzyMMHGTb5iRwPNK2nObeYrmOryKKZmDYXeXpQeyaYnQdR97huozvxnnFrEADLqIHGFKoehUNDk/ZNg=="},
+                {src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/ext-language_tools.min.js", integrity: "sha512-L+lSo49H8Yv9b6EdszH1LdR7xM+hVSP1klSeAKnjAw8izjfpkoVBlFNOQGm34u1gWIS3uwTzIZ9APNv0Bx7Otw=="},
+                {src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/mode-powershell.min.js", integrity: "sha512-a7vIjzjQxOXP8XwgOBjK8xQWxca0Nq7ujt/SQhS2a7/YiKumPlA/QAKzVXa2lR9aYwoDSNwDyz/eDViyyanV2g=="},
+                {src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/theme-tomorrow.min.js", integrity: "sha512-EBZaRQZt28witqwUjBmpIa+umnD8bYrY19LXCu8sHbreQB/eNJqHV0cSYAezsWdVsazdMLxhP/uxP2qLUuBeAQ=="},
+                {src: "https://cdnjs.cloudflare.com/ajax/libs/ace/1.41.0/keybinding-vscode.min.js", integrity: "sha512-sALdRE8skRaHi5dri3ejsaAQb1NCbkiBMSUI/IWJQYMzA7k/VvlJ5JLOX3n88OG2S+zEcqeJlaX7GZOeLXyYlQ=="},
+            ];
+            const baseScriptUrl = scriptUrls.shift();
 
-        const aceScript = document.createElement('script');
-        aceScript.src = baseScriptUrl.src;
-        aceScript.integrity = baseScriptUrl.integrity;
-        aceScript.crossOrigin = "anonymous";
-        aceScript.referrerpolicy="no-referrer"
-        document.head.appendChild(aceScript);
-        console.info('ACE base loaded...');
+            const aceScript = document.createElement('script');
+            aceScript.src = baseScriptUrl.src;
+            aceScript.integrity = baseScriptUrl.integrity;
+            aceScript.crossOrigin = "anonymous";
+            aceScript.referrerpolicy = "no-referrer"
+            document.head.appendChild(aceScript);
+            console.info('ACE base loaded...');
 
-        const waitForIt = setInterval(function () {
-            console.info('Waiting for ACE to parse and execute...');
-            if (typeof window.ace !== 'undefined') {
-                console.info('ACE loaded...');
-                clearInterval(waitForIt);
-                window.define = window.define || window.ace.define;
+            const waitForIt = setInterval(function () {
+                console.info('Waiting for ACE to parse and execute...');
+                if (typeof window.ace !== 'undefined') {
+                    console.info('ACE loaded...');
+                    clearInterval(waitForIt);
+                    window.define = window.define || window.ace.define;
 
-                console.info('Loading remainder of ACE scripts...');
-                scriptUrls.forEach(scriptUrl => {
-                    const script = document.createElement('script');
-                    script.src = scriptUrl.src;
-                    script.integrity = scriptUrl.integrity;
-                    script.crossOrigin = "anonymous";
-                    script.referrerpolicy="no-referrer"
-                    document.head.appendChild(script);
-                });
-                console.info('Remainder of ACE scripts loaded...');
-
-                console.info('Initializing ACE editor...');
-                const waitForThem = setInterval(function () {
-                    console.info('Waiting for ACE Plugins to parse and execute...');
-                    window.require([
-                        'ace/snippets',
-                        'ace/mode/powershell_highlight_rules',
-                        'ace/theme/tomorrow-css',
-                        'ace/keyboard/vscode',
-                    ], function(snippets, powershell, themeTomorrow, keysVscode) {
-                        if ([snippets, powershell, themeTomorrow, keysVscode].every(plugin => (typeof plugin !== 'undefined' && plugin !== null && plugin !== ''))) {
-                            console.info('ACE Plugins loaded...');
-                            clearInterval(waitForThem);
-
-                            // initialize editor
-                            var editor = window.ace.edit("editor");
-                            editor.setTheme("ace/theme/tomorrow");
-                            editor.session.setMode("ace/mode/powershell");
-                            editor.setKeyboardHandler("ace/keyboard/vscode");
-                            editor.setOptions({
-                                minLines:    1,
-                                maxLines:    13,
-                                printMargin: false,
-                            });
-                            document.getElementById('command').style.display = 'none';
-
-                            // set the initial value
-                            editor.setValue(document.getElementById('command').value, -1);
-                            console.info('ACE editor initialized...');
-
-                            // bind changes to the hidden text area
-                            editor.session.on('change', function () {
-                                console.info('ACE editor content change!');
-                                var cmd = document.getElementById('command');
-                                cmd.value = editor.session.getValue();
-                                cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
-                            });
-                        }
+                    console.info('Loading remainder of ACE scripts...');
+                    scriptUrls.forEach(scriptUrl => {
+                        const script = document.createElement('script');
+                        script.src = scriptUrl.src;
+                        script.integrity = scriptUrl.integrity;
+                        script.crossOrigin = "anonymous";
+                        script.referrerpolicy = "no-referrer"
+                        document.head.appendChild(script);
                     });
-                }, 10);
-            }
-        }, 10);
+                    console.info('Remainder of ACE scripts loaded...');
+
+                    console.info('Initializing ACE editor...');
+                    const waitForThem = setInterval(function () {
+                        console.info('Waiting for ACE Plugins to parse and execute...');
+                        window.require([
+                            'ace/snippets',
+                            'ace/mode/powershell_highlight_rules',
+                            'ace/theme/tomorrow-css',
+                            'ace/keyboard/vscode',
+                        ], function (snippets, powershell, themeTomorrow, keysVscode) {
+                            if ([snippets, powershell, themeTomorrow, keysVscode].every(plugin => (typeof plugin !== 'undefined' && plugin !== null && plugin !== ''))) {
+                                console.info('ACE Plugins loaded...');
+                                clearInterval(waitForThem);
+
+                                // initialize editor
+                                var editor = window.ace.edit("editor");
+                                editor.setTheme("ace/theme/tomorrow");
+                                editor.session.setMode("ace/mode/powershell");
+                                editor.setKeyboardHandler("ace/keyboard/vscode");
+                                editor.setOptions({
+                                    minLines:    2,
+                                    maxLines:    13,
+                                    printMargin: false,
+                                });
+                                document.getElementById('command').style.display = 'none';
+
+                                // set the initial value
+                                editor.setValue(document.getElementById('command').value, -1);
+                                console.info('ACE editor initialized...');
+
+                                // bind changes to the hidden text area
+                                editor.session.on('change', function () {
+                                    console.info('ACE editor content change!');
+                                    var cmd = document.getElementById('command');
+                                    cmd.value = editor.session.getValue();
+                                    cmd.dispatchEvent(new Event('input')); // triggers angular to update the value of ng-model
+                                });
+                            }
+                        });
+                    }, 10);
+                }
+            }, 10);
+        })();
     </script>
 
     <div class="form_item_block">
