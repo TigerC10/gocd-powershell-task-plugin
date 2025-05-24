@@ -126,7 +126,7 @@
     <div class="form_item_block" ng-show="Mode == 'Command'">
     <label for="command">Command:</label>
     <div id="editor" style="min-height: 26;"></div>
-    <textarea id="command" wrap="off" autocomplete="off"></textarea>
+    <textarea id="command" wrap="off" autocomplete="off" ng-model="Command"></textarea>
     <span class="form_error" ng-show="GOINPUTNAME[Command].$error.server">{{ GOINPUTNAME[Command].$error.server }}</span>
     </div>
 
