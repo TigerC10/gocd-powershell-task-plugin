@@ -35,21 +35,21 @@
 
         const waitForIt = setInterval(function () {
             console.info('Waiting for ACE to parse and execute...');
-            if (typeof ace !== 'undefined') {
-            console.info('ACE loaded...');
-            clearInterval(waitForIt);
-            window.define = window.define || ace.define;
+            if (typeof window.ace !== 'undefined') {
+                console.info('ACE loaded...');
+                clearInterval(waitForIt);
+                window.define = window.define || ace.define;
 
-            console.info('Loading remainder of ACE scripts...');
-            scriptUrls.forEach(scriptUrl => {
-                const script = document.createElement('script');
-                script.src = scriptUrl.src;
-                script.integrity = scriptUrl.integrity;
-                script.crossOrigin = "anonymous";
-                script.referrerpolicy="no-referrer"
-                document.head.appendChild(script);
-            });
-            console.info('Remainder of ACE scripts loaded...');
+                console.info('Loading remainder of ACE scripts...');
+                scriptUrls.forEach(scriptUrl => {
+                    const script = document.createElement('script');
+                    script.src = scriptUrl.src;
+                    script.integrity = scriptUrl.integrity;
+                    script.crossOrigin = "anonymous";
+                    script.referrerpolicy="no-referrer"
+                    document.head.appendChild(script);
+                });
+                console.info('Remainder of ACE scripts loaded...');
             }
         }, 10);
     </script>
