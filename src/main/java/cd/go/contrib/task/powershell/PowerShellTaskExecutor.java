@@ -45,15 +45,9 @@ public class PowerShellTaskExecutor {
         if (taskConfig.getMode().equals("Command")) {
             OutputStream outputStream = powershellProcess.getOutputStream();
             String commandScript = taskConfig.getCommand();
-            File workingDir = new File(taskContext.getWorkingDir());
-            File script = new File(workingDir, commandScript);
-            InputStream fis = new FileInputStream(script.getAbsolutePath());
-            byte[] buffer = new byte[1024];
-            int read;
-            while((read = fis.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, read);
-            }
-            fis.close();
+            // Write the commandScript string directly to the process's standard input
+            outputStream.write(commandScript.getBytes());
+            outputStream.flush();
             outputStream.close();
         }
 
@@ -73,6 +67,8 @@ public class PowerShellTaskExecutor {
     ProcessBuilder createPowerShellCommandWithOptions(Context taskContext, TaskConfig taskConfig) {
         List<String> command = new ArrayList<String>();
         command.add(taskConfig.getExe());
+
+        command.add("-NonInteractive");
 
         if (taskConfig.getNoProfile()) {
             command.add("-NoProfile");
